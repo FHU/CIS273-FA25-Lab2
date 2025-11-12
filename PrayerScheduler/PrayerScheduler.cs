@@ -36,7 +36,30 @@ public class PrayerScheduler
 
     public void AnswerPrayer(int id)
     {
-
+        //is the prayer in the dailys?
+        var prayerToRemove = DailyPrayers.Find((prayer) => prayer.ID == id);
+        if (prayerToRemove != null)
+        {
+            prayerToRemove.IsAnswered = true;
+            DailyPrayers.Remove(prayerToRemove);
+            AnsweredPrayers.Add(prayerToRemove);
+            return;
+        }
+        
+        //is the prayer in the non-dailys?
+        for(int i=0; i< nonDailyPrayers.Count; i++)
+        {
+            var prayer = nonDailyPrayers.Dequeue();
+            if (prayer.ID == id)
+            {
+                prayer.IsAnswered = true;
+                AnsweredPrayers.Add(prayer);
+            }
+            else
+            {
+                nonDailyPrayers.Enqueue(prayer);
+            }
+        }
     
     }
 
